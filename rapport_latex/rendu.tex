@@ -1,0 +1,105 @@
+\documentclass{article}
+\usepackage{lmodern}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[french]{babel}
+\usepackage{hyperref}
+\usepackage{xcolor}
+
+\title{Projet Informatique : Flamme Rouge}
+\author{Rida EL MASRI et Youssef HAMDI \textsl{(Mi4 Bin03)}}
+\date{2023/2024 - Semestre 2}
+
+\begin{document}
+\maketitle \medskip
+\tableofcontents
+
+\newpage
+\section{Introduction}
+
+Ce projet consiste à recréer le jeu Flamme Rouge sur ordinateur. Le projet est divisé en deux parties : une partie guidée qui a été pensée par les professeurs, et une partie extensions où c'est à nous d'imaginer de nouvelles idées à ajouter au jeu pour l'améliorer. Pour notre partie extensions, on a décidé de se concentrer principalement sur l'interface graphique et l'expérience de jeu. Étant donné que le langage qui nous est imposé est le Python, on utilisera le module Pygame pour implémenter la plupart de nos idées. Dans ce rapport, on va expliquer la façon dont on a implémenté certaines fonctions de la partie guidée, et pour nos extensions, on va expliquer tous les ajouts qu'on a faits. \medskip
+
+Tous les fichiers sources sont accessibles sur le dépôt \href{https://gitlab.isima.fr/rielmasri/projet-flamme-rouge-s2}{\textcolor{orange}{GitLab}} du projet.
+
+\section{Organisation}
+
+L'organisation du travail tout au long du semestre a varié selon les tâches à effectuer. Pour la partie guidée, on a décidé de travailler de façon linéaire afin de ne pas créer de conflits sur \textbf{Git} et pour mieux comprendre la façon dont le jeu est structuré, c'est-à-dire qu'on travaille sur les mêmes fonctions ensemble ou seuls. Par contre, pour la partie extensions, c'était un peu différent car il n'y avait pas d'ordre de travail ; on devait faire nos modifications sur les fichiers déjà présents. Dans ce cas, on a pu travailler chacun de notre côté en même temps sur nos extensions, mais on a aussi travaillé ensemble sur beaucoup de fonctionnalités.
+
+\section{Partie Guidée}
+
+\subsection{Fichier A}
+
+Pour implémenter la fonction \texttt{affichage\_route}, on utilise d'abord une autre fonction \texttt{decoupage}, qui permet de découper une liste en plusieurs listes de tailles égales, sur les listes positions ; elle renvoie une liste composée de listes. On suppose que les listes données en arguments sont de longueurs \textit{nombre de lignes $\times$ taille du segment}. Ensuite, en utilisant le compteur de la boucle while (qui permet d'alterner entre droite et gauche) comme indice, on peut accéder à chaque élément pour construire la route à l'aide des fonctions codées précédemment dans ce même fichier. La fonction renvoie une chaîne de caractères qui représente le circuit.
+
+\subsection{Fichier C}
+
+Pour implémenter la fonction \texttt{pioche\_main\_joueur}, on utilise une condition (if/else) pour les deux cas demandés. Dans le bloc \textbf{if}, on stocke une copie de la liste paquet du joueur tranchée de 0 à 4 dans une variable, puis on parcourt à l'aide d'une \textbf{boucle for} la même tranche de la liste originale pour enlever chaque élément ajouté précédemment. Dans le bloc \textbf{else}, qui est le deuxième cas, on commence par mettre la liste paquet du joueur dans la variable "elem", et on va mélanger la défausse après avoir vidé la liste paquet, puis on ajoute les cartes mélangées à la liste paquet. Pour finir, on ajoute les cartes manquantes à la main puis on supprime les cartes qu'on a rajoutées à la main du paquet. La fonction renvoie la main du joueur.
+
+\subsection{Fichier D}
+
+Pour implémenter la fonction \texttt{avancee\_coureur}, on stocke la position actuelle du joueur dans une variable, et de même pour son indice, puis on crée une variable "indice\_cible" qui a pour valeur l'indice du joueur voulu après son déplacement. On crée une variable \texttt{str} vide qui représentera sa nouvelle position. Dans un bloc \textbf{if}, on teste si l'indice cible est valide, c'est-à-dire qu'il doit être strictement inférieur à la longueur des listes des positions (sinon, on rappelle la fonction en réduisant la distance de 1 à chaque fois jusqu'à ce qu'elle soit valide). On parcourt de manière décroissante les indices entre "indice\_cible" et "indice\_pos\_joueur" et on teste à chaque tour de boucle si une position à droite est disponible, sinon on cherche à gauche. On continue comme ça jusqu'à ce que l'on trouve une case disponible pour le joueur et à ce moment-là, on arrête la boucle. Ensuite, on va supprimer le joueur de son ancienne position dans les listes de positions droites ou gauches, puis on l'ajoutera à sa nouvelle position. Enfin, on ajoute la nouvelle valeur de la position du joueur à la clé qui correspond à ce dernier dans le dictionnaire des positions. Cette fonction ne renvoie rien.
+
+\subsection{Fichier E}
+
+Pour implémenter la fonction \texttt{aspiration}, on commence par grouper les joueurs à l'aide de la fonction \texttt{groupes\_coureurs}. Ensuite, en utilisant une boucle while, qui a comme condition un compteur n qui doit être inférieur à la valeur de la variable "nb\_grp" - 1 qui représente la longueur de la liste des groupes, on stocke dans deux variables différentes l'indice du dernier joueur du groupe devant et celui du premier joueur du groupe derrière, puis on compare ces deux variables dans la condition du bloc \textbf{if}, qui teste s'il y a une seule case vide entre les deux groupes. Si oui, on utilise la fonction \texttt{decale\_coureurs} sur le groupe d'indice n dans la liste pour faire avancer les coureurs de ce groupe d'une case, puis on utilise la fonction \texttt{groupes\_coureurs} pour former les nouveaux groupes. Au cas où (else) les groupes sont éloignés de plus d'une case, on décrémente la variable "nb\_grp" de 1 et donc on incrémente le compteur n pour passer au groupe suivant. Cette fonction ne renvoie rien.
+
+\section{Partie Extensions}
+
+\subsection{Fenêtre Pygame}
+
+\subsubsection{Affichage du menu}
+
+La fonction \texttt{menu\_config} sert à afficher le menu. Elle prend en argument optionnel le dictionnaire des configurations qui est initialisé à \texttt{None} par défaut. On appelle cette fonction deux fois dans le fichier \textbf{lancer\_jeu.py}. Quand le jeu est lancé, on appelle la fonction une première fois, sans argument, pour afficher les instructions de saisie. Après la saisie des choix de configurations, on appelle la fonction une deuxième fois, avec le dictionnaire de configurations en argument, pour afficher les choix de l'utilisateur.
+
+\subsubsection{Affichage du circuit}
+
+Les fonctions qui servent à construire le circuit ressemblent à celles du fichier A de la partie guidée. Chaque ligne est dessinée seule à partir des images qui représentent les cases, puis elles sont assemblées pour former une route dans une autre fonction. Les coureurs sont ajoutés aux routes en fonction de leurs configurations pour définir leurs couleurs.
+
+Enfin, le circuit complet est assemblé dans la fonction \texttt{dessine\_circuit} en utilisant les fonctions codées précédemment. Cette fonction sera utilisée dans la fonction \texttt{fenetre\_jeu} qui affiche la map choisie en arrière-plan, le circuit au-dessus, et le compte à rebours si le booléen "compt" est vrai ; on appellera la fonction à chaque tour.
+
+Le plus gros défi de la partie affichage était de trouver les bonnes valeurs des coordonnées x et y des éléments, puisque le jeu tourne en définition standard mais aussi en haute définition. Pour implémenter cette fonctionnalité, on a dû utiliser les valeurs des constantes définies au début du fichier, en effectuant des opérations élémentaires sur ces valeurs pour les utiliser en tant que coordonnées, afin d'avoir le même affichage avec différentes résolutions.
+
+\subsubsection{Affichage du texte}
+
+Pendant la partie, il y a différents textes qui apparaissent sur l'écran comme le compte à rebours avant que la course commence, la main du ou des joueur(s) manuel(s) à chaque tour, le message du vainqueur à la fin, et les événements de la course (déplacements et aspiration).
+
+\subsection{Autres extensions}
+
+\subsubsection{Musiques et Maps}
+
+Le jeu contient 3 maps différentes et chacune de ces maps a sa propre musique de fond, tout comme le menu d'accueil. Pour demander au joueur son choix de map, on va créer une fonction \texttt{choix\_mode\_jeu} qui est similaire à la fonction \texttt{configurations\_joueurs} de notre partie guidée et qui demande une saisie à l'utilisateur. Pour lire les fichiers sons, on va créer une fonction \texttt{lire\_fichier\_son} qui prend en arguments une liste qui contient les noms des fichiers, et un numéro représentant la position de la musique dans la playlist. Grâce à ces deux fonctions, on a pu facilement intégrer notre fonctionnalité.
+
+\subsubsection{Configuration IA max}
+
+On a codé une IA qui est aussi performante que L'IA "bourin" donnée par les professeurs. La stratégie consiste à choisir la plus grande carte parmi les cartes de la main lorsque le coureur n'est pas en tête de la course, ou lorsqu'il est très proche de la ligne d'arrivée. Sinon, il jouera la deuxième plus grande carte pour économiser les plus grandes cartes pour plus tard.
+
+\subsubsection{Afficher le vrai gagnant de la course}
+
+Pour implémenter cette fonctionnalité, on modifie la fonction \texttt{tour\_de\_jeu}. Premièrement, dans la partie extensions, les fonctions \texttt{tour\_de\_jeu\_sans\_effet} et \texttt{tour\_de\_jeu} ont été fusionnées pour former une seule fonction. Deuxièmement, on a ajouté un test qui vérifie à chaque déplacement si un coureur a franchi la ligne d'arrivée. On utilise la fonction déjà codée \texttt{test\_victoire} dans la boucle qui sert à déplacer les coureurs. Finalement, la fonction \texttt{tour\_de\_jeu} renvoie la chaîne de caractères qui représente le gagnant.
+
+\subsubsection{Réparer des bugs}
+
+\begin{itemize}
+
+\item[a)] \texttt{pioche\_main\_joueur} : \textcolor{teal}{Main vide} \newline \small
+Ce bug se produit le plus souvent en fin de partie dans celles avec des paramètres "non classiques". Dans le cas où le joueur aura épuisé (ou presque) toutes les cartes de son paquet et de sa défausse, il ne pourra plus piocher de cartes et donc ne pourra pas finir la partie. Pour réparer ce bug, on doit modifier le code du bloc \textbf{else} de la fonction. On ajoutera un if/else à la fin (juste après avoir mélangé la défausse et rempli son contenu dans le paquet). On testera si la longueur de la nouvelle liste paquet est inférieure au nombre de cartes manquantes. Si oui, on ajoute des cartes 2 jusqu'à avoir rempli la main. Sinon, on exécutera le code qui était là avant. \newline \normalsize
+
+\item[b)] \texttt{choix\_carte\_manuel} : \textcolor{teal}{Erreur de saisie} \newline \small
+Si l'utilisateur saisit autre chose qu'un entier, au moment où il devrait choisir sa carte de déplacement, cela provoquera une erreur qui fait planter le jeu. Pour réparer ça, on utilisera le bloc \textbf{try} qui contient le code et qui nous permet de l'exécuter seulement si ce dernier ne déclenche aucune erreur. Mais il faudrait tout de même choisir une carte, alors on utilisera le bloc \textbf{except} qui s'exécutera au cas où le bloc \textbf{try} ne passe pas, et la carte choisie sera la plus petite carte de la main. \newpage \normalsize
+
+\item[c)] \texttt{distribution\_fatigue} : \textcolor{teal}{Indice non valide} \newline \small
+Ce bug fait planter le jeu lorsque les indices de la liste utilisée dans la condition du bloc \textbf{if} sont hors de portée. Ce bug n'arrive que si le joueur est assez proche de la fin du circuit. Ainsi, on ne considérera pas un cas par défaut comme pour le bug précédent, mais il faudra quand même éviter que le bug se produise. Pour cela, on utilisera un bloc \textbf{try} qui contient le code de la fonction, et un bloc \textbf{except} qui ne fait rien. \newline \normalsize
+
+\end{itemize}
+
+Les bugs \underline{b} et \underline{c} ont été réparés dans les fichiers de la partie guidée également.
+
+\subsection{Fichier de lancement du jeu}
+
+Le fichier qui sert à lancer une partie de jeu est similaire aux fichiers F et G dans sa structure. Il fait tourner le jeu dans une fenêtre Pygame mais qui sert uniquement pour l'affichage car tout se passe dans le terminal. Le jeu tourne à une image par tour en moyenne, soit 22 à 28 images en total (en incluant le menu et le compte à rebours, et pour les configurations avec un seul joueur manuel).
+
+\section{Conclusion}
+
+Ce projet de recréation du jeu Flamme Rouge a été une expérience à la fois enrichissante et stimulante pour nous. La partie guidée nous a offert l'opportunité de consolider nos connaissances en programmation Python et en manipulation de données, tout en nous familiarisant avec les principes de travail en équipe de manière organisée et efficace. La conception et l'implémentation des extensions ont constitué un défi passionnant, nous permettant d'explorer notre créativité et d'approfondir notre compréhension des concepts enseignés en classe. En conclusion, ce projet a été une étape importante dans notre apprentissage et nous sommes fiers du résultat obtenu.
+
+\end{document}
